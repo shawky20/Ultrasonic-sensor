@@ -1,0 +1,34 @@
+/*
+ * ultrasonic.h
+ *
+ *  Created on: Oct 17, 2021
+ *      Author: LENOVO
+ */
+
+#ifndef ULTRASONIC_H_
+#define ULTRASONIC_H_
+
+#include "std_types.h"
+#include "icu.h"
+#include "gpio.h"
+#include <avr/io.h>
+
+extern uint8 g_edgeCount;
+
+
+#define TRIGGER_PORT_ID PORTB_ID
+#define TRIGGER_PIN_ID  PIN5_ID
+
+
+void Ultrasonic_init(void);
+
+
+void Ultrasonic_Trigger(void);
+
+uint16 Ultrasonic_readDistance(void);
+
+uint16 Ultrasonic_readDistance(void);
+
+void Ultrasonic_edgeProcessing(void);
+
+#endif /* ULTRASONIC_H_ */

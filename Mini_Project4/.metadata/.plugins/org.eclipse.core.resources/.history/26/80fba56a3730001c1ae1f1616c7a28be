@@ -1,0 +1,104 @@
+/******************************************************************************
+ *
+ * Module: ULTRASONIC
+ *
+ * File Name: ultrasonic.c
+ *
+ * Description: Source file for the ULTRASONIC driver
+ *
+ * Author: Chady Achraf
+ *
+ *******************************************************************************/
+#include"ultrasonic.h"
+#include"icu.h"
+#include"gpio.h"
+#include"std_types.h"
+#include"common_macros.h"
+#include<util/delay.h>
+
+//
+#include"lcd.h"
+//
+
+
+/* global var*/
+uint8 count=0;
+uint16 first_high=0;
+uint16 period=0;
+
+void Ultrasonic_init(void) {
+
+    /*Initializing the ICU configuration:
+     * Frequency: FCPU/8
+     * Triggered by: RISING edge
+     */
+    Icu_ConfigType Icu_Config = { F_CPU_8, RISING };
+    Icu_init(&Icu_Config);
+
+    /* Setup the call back function pointer to ultrasonic driver:
+     * Ultrasonic_edgeProcessing
+     */
+    Icu_setCallBack(Ultrasonic_edgeProcessing);
+
+    /*Setup the direction for the trigger pin as output pin through the GPIO driver*/
+    GPIO_setupPinDirection(PORTB_ID, PIN5_ID, PIN_OUTPUT);
+    /*Initialize the pin value*/
+    GPIO_writePin(PORTB_ID, PIN5_ID,LOGIC_LOW);
+
+}
+
+void Ultrasonic_Trigger(void){
+    /*Writing logic high to pinD5*/
+    GPIO_writePin(PORTB_ID, PIN5_ID,LOGIC_HIGH);
+
+    _delay_us(10);
+
+    /*Writing logic low to pinD5 to end the trigger pulse*/
+    GPIO_writePin(PORTB_ID, PIN5_ID,LOGIC_LOW);
+}
+
+uint16 Ultrasonic_readDistance(void){
+    /*Send the trigger pulse by using Ultrasonic_Trigger function*/
+    uint16 distance;
+    Ultrasonic_Trigger();
+
+
+     while(first_high==0 );
+
+
+     distance= ((float)first_high/58.8);
+
+     first_high=0;
+
+     return distance;
+}
+
+
+void Ultrasonic_edgeProcessing(void) {
+    /*Start calculating the signal period */
+        count++;
+            if(count == 1)
+            {
+                /*
+                 * Clear the timer counter register to start measurements from the
+                 * first detected rising edge
+                 */
+                Icu_clearTimerValue();
+                /* Detect falling edge */
+                Icu_setEdgeDetectionType(FALLING);
+            }
+            else if(count == 2)
+            {
+                /* Store the High time value */
+                first_high = Icu_getInputCaptureValue();
+                /* Detect rising edge */
+                Icu_setEdgeDetectionType(RISING);
+
+
+                count =0;
+
+            }
+
+
+}
+

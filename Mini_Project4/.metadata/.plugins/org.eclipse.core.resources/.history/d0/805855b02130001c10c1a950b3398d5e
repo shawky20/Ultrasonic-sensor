@@ -1,0 +1,38 @@
+/*
+ * project.c
+ *
+ *  Created on: Oct 17, 2021
+ *      Author: LENOVO
+ */
+
+
+#include "ultrasonic.h"
+#include "lcd.h"
+#include "avr/io.h"
+#include "util/delay.h"
+int main(void){
+	uint16 distance;
+
+	SREG |= (1<<7);
+
+	LCD_init();
+	Ultrasonic_init();
+
+
+	LCD_displayString("Distance =   cm");
+
+
+	while(1){
+
+
+
+		distance=Ultrasonic_readDistance();
+		LCD_moveCursor(0,11);
+		LCD_intgerToString(distance);
+
+
+
+
+
+	}
+}

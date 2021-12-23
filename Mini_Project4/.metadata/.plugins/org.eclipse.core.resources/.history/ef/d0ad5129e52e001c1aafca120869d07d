@@ -1,0 +1,21 @@
+/*
+ * ultrasonic.h
+ *
+ *  Created on: Oct 17, 2021
+ *      Author: LENOVO
+ */
+
+#ifndef ULTRASONIC_H_
+#define ULTRASONIC_H_
+
+#include "std_types.h"
+#include "icu.h"
+#include "gpio.h"
+
+
+extern uint8 g_edgeCount = 0;
+extern uint16 g_timeHigh = 0;
+
+
+
+#endif /* ULTRASONIC_H_ */
